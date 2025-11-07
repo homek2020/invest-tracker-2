@@ -51,7 +51,7 @@ cd backend
 npm run dev
 ```
 
-The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. Ensure `MONGO_URI` and `MONGO_DB_NAME` are set in the environment before starting the server so it can establish the MongoDB connection.
+The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. The development command uses [`tsx`](https://github.com/privatenumber/tsx) so the TypeScript ESM entrypoint runs without additional Node.js flags. Ensure `MONGO_URI` and `MONGO_DB_NAME` are set in the environment before starting the server so it can establish the MongoDB connection.
 
 ### Run the web client
 
