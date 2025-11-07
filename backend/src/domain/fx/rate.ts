@@ -1,6 +1,6 @@
 import type { CurrencyCode } from '../users/user';
 
-export type FxRateMap = Partial<Record<CurrencyCode, string>> & Record<string, string>;
+export type FxRateMap = Record<string, string>;
 
 export interface FxRate {
   id: string;

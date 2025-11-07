@@ -54,3 +54,7 @@ npm run start
 ```
 
 The build step emits the compiled JavaScript into `dist/` and `npm run start` launches the compiled server.
+
+> **Tip:** Run these npm commands from inside the `backend` directory. If you prefer executing them from the repository root, use
+> `npm --prefix backend run <script>`. Avoid combining the `--prefix backend` flag while already positioned in the `backend`
+> folder—npm would resolve the prefix as `backend/backend`, leading to the “could not read package.json” error observed earlier.
