@@ -1,0 +1,177 @@
+:root {
+  --color-background: #0f172a;
+  --color-surface: #111827;
+  --color-surface-alt: #1f2937;
+  --color-border: #1e293b;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+  --color-accent: #38bdf8;
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-family);
+}
+
+input, select {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.main-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: rgba(15, 23, 42, 0.85);
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar h1 {
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+}
+
+.nav-link {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  color: var(--color-text-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-link.active {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--color-text);
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.8);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.table thead {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--color-accent);
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 18px 30px -18px rgba(14, 165, 233, 0.65);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.button-primary:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 40px -20px rgba(14, 165, 233, 0.8);
+}
+
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.tag-success {
+  color: var(--color-success);
+}
+
+.tag-danger {
+  color: var(--color-error);
+}
+
+.table-row {
+  transition: background 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(148, 163, 184, 0.05);
+}
