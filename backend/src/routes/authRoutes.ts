@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { AuthService } from '../services/authService.js';
+import { AuthService } from '../services/authService';
 
 export async function registerAuthRoutes(fastify: FastifyInstance, authService: AuthService) {
   fastify.post('/auth/request-otp', async (request, reply) => {

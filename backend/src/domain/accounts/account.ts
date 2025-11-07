@@ -1,4 +1,4 @@
-import type { CurrencyCode } from '../users/user.js';
+import type { CurrencyCode } from '../users/user';
 
 export type ProviderCode = 'FINAM' | 'TRADEREPUBLIC' | 'BYBIT' | 'BCS' | 'IBKR';
 

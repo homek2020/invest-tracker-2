@@ -1,12 +1,12 @@
 import { Decimal128, Db, MongoClient, type Collection } from 'mongodb';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import type { Account, CreateAccountInput, ProviderCode, UpdateAccountInput } from '../domain/accounts/account.js';
-import type { Balance, BalanceStatus, BulkBalanceUpdateItem } from '../domain/balances/balance.js';
-import type { FxRate } from '../domain/fx/rate.js';
-import type { CurrencyCode, User } from '../domain/users/user.js';
-import type { Environment } from '../config/environment.js';
-import { clampTwoDecimals, difference, sum } from '../utils/money.js';
+import type { Account, CreateAccountInput, ProviderCode, UpdateAccountInput } from '../domain/accounts/account';
+import type { Balance, BalanceStatus, BulkBalanceUpdateItem } from '../domain/balances/balance';
+import type { FxRate } from '../domain/fx/rate';
+import type { CurrencyCode, User } from '../domain/users/user';
+import type { Environment } from '../config/environment';
+import { clampTwoDecimals, difference, sum } from '../utils/money';
 
 interface UserDocument {
   _id: string;

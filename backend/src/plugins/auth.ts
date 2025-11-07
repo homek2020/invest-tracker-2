@@ -1,7 +1,7 @@
 import fastifyPlugin from 'fastify-plugin';
 import fastifyJwt from '@fastify/jwt';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import type { Environment } from '../config/environment.js';
+import type { Environment } from '../config/environment';
 
 export interface AuthPluginOptions {
   env: Environment;

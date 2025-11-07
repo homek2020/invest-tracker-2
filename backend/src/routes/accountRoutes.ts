@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { MongoStoreService } from '../services/mongoStore.js';
+import type { MongoStoreService } from '../services/mongoStore';
 
 const accountSchema = z.object({
   name: z.string(),

@@ -1,4 +1,4 @@
-import type { CurrencyCode } from '../users/user.js';
+import type { CurrencyCode } from '../users/user';
 
 export interface FxRate {
   id: string;

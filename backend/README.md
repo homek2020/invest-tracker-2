@@ -38,13 +38,13 @@ npm install
 
 ## Development server
 
-Start the API with hot reloading via [`tsx`](https://github.com/esbuild-kit/tsx):
+Start the API with hot reloading via [`ts-node-dev`](https://github.com/wclr/ts-node-dev):
 
 ```bash
 npm run dev
 ```
 
-The server listens on <http://localhost:3000> by default. Ensure the MongoDB environment variables are available so the application can connect on boot. `tsx` executes the TypeScript entrypoint directly in ES module mode, so no additional configuration is required for Node.js.
+The server listens on <http://localhost:3000> by default. Ensure the MongoDB environment variables are available so the application can connect on boot. `ts-node-dev` runs the TypeScript entrypoint using CommonJS modules, avoiding the ES module loader requirements that can cause issues on some environments.
 
 ## Production build
 

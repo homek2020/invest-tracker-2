@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import type { Environment } from '../config/environment.js';
-import type { User } from '../domain/users/user.js';
-import { MongoStoreService } from './mongoStore.js';
+import type { Environment } from '../config/environment';
+import type { User } from '../domain/users/user';
+import { MongoStoreService } from './mongoStore';
 
 interface OtpEntry {
   email: string;

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { MongoStoreService } from '../services/mongoStore.js';
+import type { MongoStoreService } from '../services/mongoStore';
 
 export async function registerFxRoutes(fastify: FastifyInstance, store: MongoStoreService) {
   fastify.get('/fx/rates', { preHandler: fastify.authenticate }, async (request) => {

@@ -53,7 +53,7 @@ cd backend
 npm run dev
 ```
 
-The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. The development command uses [`tsx`](https://github.com/esbuild-kit/tsx) in watch mode so the ES module TypeScript entrypoint runs without additional flags. Ensure `MONGO_URI` and `MONGO_DB_NAME` are set in the environment before starting the server so it can establish the MongoDB connection.
+The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. The development command relies on [`ts-node-dev`](https://github.com/wclr/ts-node-dev) with CommonJS output, avoiding the ES module loader requirement that was causing runtime errors. Ensure `MONGO_URI` and `MONGO_DB_NAME` are set in the environment before starting the server so it can establish the MongoDB connection.
 
 ### Run the web client
 

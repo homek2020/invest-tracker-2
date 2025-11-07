@@ -2,15 +2,15 @@ import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyCookie from '@fastify/cookie';
 import fastifySensible from '@fastify/sensible';
-import { loadEnvironment } from './config/environment.js';
-import { connectToDatabase, MongoStoreService } from './services/mongoStore.js';
-import { AuthService } from './services/authService.js';
-import { registerAuthRoutes } from './routes/authRoutes.js';
-import { registerAccountRoutes } from './routes/accountRoutes.js';
-import { registerBalanceRoutes } from './routes/balanceRoutes.js';
-import { registerFxRoutes } from './routes/fxRoutes.js';
-import { registerDashboardRoutes } from './routes/dashboardRoutes.js';
-import authPlugin from './plugins/auth.js';
+import { loadEnvironment } from './config/environment';
+import { connectToDatabase, MongoStoreService } from './services/mongoStore';
+import { AuthService } from './services/authService';
+import { registerAuthRoutes } from './routes/authRoutes';
+import { registerAccountRoutes } from './routes/accountRoutes';
+import { registerBalanceRoutes } from './routes/balanceRoutes';
+import { registerFxRoutes } from './routes/fxRoutes';
+import { registerDashboardRoutes } from './routes/dashboardRoutes';
+import authPlugin from './plugins/auth';
 
 async function bootstrap() {
   const env = loadEnvironment();

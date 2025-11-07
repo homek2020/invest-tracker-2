@@ -1,5 +1,5 @@
-import type { CurrencyCode } from '../users/user.js';
-import type { ProviderCode } from '../accounts/account.js';
+import type { CurrencyCode } from '../users/user';
+import type { ProviderCode } from '../accounts/account';
 
 export type BalanceStatus = 'OPEN' | 'CLOSED';
 
