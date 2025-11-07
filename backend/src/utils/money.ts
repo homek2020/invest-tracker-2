@@ -16,7 +16,7 @@ export function formatMoney(value: MoneyLike): string {
 }
 
 export function sum(values: MoneyLike[]): Decimal {
-  return values.reduce((acc, current) => acc.add(toDecimal(current)), new Decimal(0));
+  return values.reduce<Decimal>((acc, current) => acc.add(toDecimal(current)), new Decimal(0));
 }
 
 export function difference(a: MoneyLike, b: MoneyLike): Decimal {

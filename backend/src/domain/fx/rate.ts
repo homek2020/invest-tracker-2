@@ -1,10 +1,12 @@
 import type { CurrencyCode } from '../users/user';
 
+export type FxRateMap = Partial<Record<CurrencyCode, string>> & Record<string, string>;
+
 export interface FxRate {
   id: string;
   date: string;
   base: CurrencyCode;
-  rates: Record<CurrencyCode, string> & Record<string, string>;
+  rates: FxRateMap;
   source: 'CBR_T+1';
   fetchedAt: string;
 }
