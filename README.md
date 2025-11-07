@@ -27,7 +27,9 @@ The repository is organised as a two-service workspace:
    export MONGO_DB_NAME="invest_tracker"
    ```
 
-3. Bootstrap the schema (collections and indexes) before launching the API:
+   The backend package ships with a dedicated [README](backend/README.md) that covers the available configuration knobs in more detail.
+
+3. Bootstrap the schema (collections and indexes) before launching the API. The helper scripts live in [`backend/scripts`](backend/scripts/):
 
    ```bash
    cd backend
