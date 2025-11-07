@@ -8,7 +8,9 @@
     "dev": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "db:create-collections": "node ./scripts/create-collections.mjs",
+    "db:create-indexes": "node ./scripts/create-indexes.mjs"
   },
   "dependencies": {
     "@fastify/cookie": "^9.4.0",
@@ -19,6 +21,7 @@
     "decimal.js": "^10.4.3",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
+    "mongodb": "^6.8.0",
     "nanoid": "^5.0.7",
     "zod": "^3.23.8"
   },

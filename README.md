@@ -8,13 +8,32 @@ The repository is organised as a two-service workspace:
 
 | Service   | Path      | Description |
 |-----------|-----------|-------------|
-| API       | `backend` | Fastify server with in-memory persistence that mimics the target Mongo/Redis architecture. |
+| API       | `backend` | Fastify server backed by MongoDB persistence and JWT-based auth flows. |
 | Web       | `frontend`| React single-page application built with Vite, React Query and Zustand. |
 
 ### Prerequisites
 
 * Node.js 18+
 * npm 9+
+* MongoDB 6.0+
+
+### Configure MongoDB
+
+1. Start a MongoDB instance locally or point the application at a managed cluster. The default connection string expects `mongodb://127.0.0.1:27017`.
+2. Export the backend environment variables so the API and setup scripts can connect:
+
+   ```bash
+   export MONGO_URI="mongodb://127.0.0.1:27017"
+   export MONGO_DB_NAME="invest_tracker"
+   ```
+
+3. Bootstrap the schema (collections and indexes) before launching the API:
+
+   ```bash
+   cd backend
+   npm run db:create-collections
+   npm run db:create-indexes
+   ```
 
 ### Install dependencies
 
@@ -32,7 +51,7 @@ cd backend
 npm run dev
 ```
 
-The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. The implementation ships with an in-memory data store to simplify local evaluation; swap the repositories with MongoDB adapters for production use.
+The API listens on <http://localhost:3000> and exposes the `/api/v1` routes from the requirements document. Ensure `MONGO_URI` and `MONGO_DB_NAME` are set in the environment before starting the server so it can establish the MongoDB connection.
 
 ### Run the web client
 
@@ -55,7 +74,7 @@ backend/
     config/       # Environment and runtime configuration
     domain/       # Domain models for users, accounts, balances and FX
     routes/       # REST endpoints mapped to use cases
-    services/     # Auth + in-memory persistence services
+    services/     # Auth + MongoDB data access services
 frontend/
   src/
     api/          # REST API clients

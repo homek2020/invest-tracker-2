@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { StoreService } from '../services/inMemoryStore.js';
+import type { MongoStoreService } from '../services/mongoStore.js';
 
 const accountSchema = z.object({
   name: z.string(),
@@ -10,7 +10,7 @@ const accountSchema = z.object({
   note: z.string().optional(),
 });
 
-export async function registerAccountRoutes(fastify: FastifyInstance, store: StoreService) {
+export async function registerAccountRoutes(fastify: FastifyInstance, store: MongoStoreService) {
   fastify.get('/accounts', { preHandler: fastify.authenticate }, async (request) => {
     const userId = request.user.sub;
     return store.listAccounts(userId);
@@ -34,7 +34,7 @@ export async function registerAccountRoutes(fastify: FastifyInstance, store: Sto
     const userId = request.user.sub;
     const paramsSchema = z.object({ id: z.string() });
     const { id } = paramsSchema.parse(request.params);
-    store.deleteAccount(userId, id);
+    await store.deleteAccount(userId, id);
     reply.code(204);
   });
 }

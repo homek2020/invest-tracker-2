@@ -3,7 +3,7 @@ import fastifyCors from '@fastify/cors';
 import fastifyCookie from '@fastify/cookie';
 import fastifySensible from '@fastify/sensible';
 import { loadEnvironment } from './config/environment.js';
-import { createStore, StoreService } from './services/inMemoryStore.js';
+import { connectToDatabase, MongoStoreService } from './services/mongoStore.js';
 import { AuthService } from './services/authService.js';
 import { registerAuthRoutes } from './routes/authRoutes.js';
 import { registerAccountRoutes } from './routes/accountRoutes.js';
@@ -14,7 +14,8 @@ import authPlugin from './plugins/auth.js';
 
 async function bootstrap() {
   const env = loadEnvironment();
-  const store = new StoreService(createStore());
+  const { client, collections } = await connectToDatabase(env);
+  const store = new MongoStoreService(collections);
   const authService = new AuthService(env, store);
 
   const fastify = Fastify({ logger: true });
@@ -29,8 +30,23 @@ async function bootstrap() {
   await registerFxRoutes(fastify, store);
   await registerDashboardRoutes(fastify, store);
 
+  fastify.addHook('onClose', async () => {
+    await client.close();
+  });
+
   const { serverHost, serverPort } = env;
   await fastify.listen({ host: serverHost, port: serverPort });
+
+  const closeGracefully = async () => {
+    try {
+      await fastify.close();
+    } catch (error) {
+      fastify.log.error(error);
+    }
+  };
+
+  process.on('SIGINT', closeGracefully);
+  process.on('SIGTERM', closeGracefully);
 }
 
 bootstrap().catch((error) => {

@@ -1,13 +1,13 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { StoreService } from '../services/inMemoryStore.js';
+import type { MongoStoreService } from '../services/mongoStore.js';
 
 const monthQuerySchema = z.object({
   year: z.coerce.number(),
   month: z.coerce.number().min(1).max(12),
 });
 
-export async function registerBalanceRoutes(fastify: FastifyInstance, store: StoreService) {
+export async function registerBalanceRoutes(fastify: FastifyInstance, store: MongoStoreService) {
   fastify.get('/balances', { preHandler: fastify.authenticate }, async (request) => {
     const userId = request.user.sub;
     const query = monthQuerySchema.parse(request.query);

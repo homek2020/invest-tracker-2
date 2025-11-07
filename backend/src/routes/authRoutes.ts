@@ -13,7 +13,7 @@ export async function registerAuthRoutes(fastify: FastifyInstance, authService: 
   fastify.post('/auth/verify-otp', async (request, reply) => {
     const bodySchema = z.object({ email: z.string().email(), code: z.string() });
     const { email, code } = bodySchema.parse(request.body);
-    const { accessToken, refreshToken, user } = authService.verifyOtp(email, code);
+    const { accessToken, refreshToken, user } = await authService.verifyOtp(email, code);
     reply.setCookie('refreshToken', refreshToken, { path: '/', httpOnly: true, secure: false });
     return reply.send({ accessToken, refreshToken, user });
   });

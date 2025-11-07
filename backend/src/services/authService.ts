@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import type { Environment } from '../config/environment.js';
 import type { User } from '../domain/users/user.js';
-import { StoreService } from './inMemoryStore.js';
+import { MongoStoreService } from './mongoStore.js';
 
 interface OtpEntry {
   email: string;
@@ -15,7 +15,7 @@ export class AuthService {
 
   constructor(
     private readonly env: Environment,
-    private readonly store: StoreService,
+    private readonly store: MongoStoreService,
   ) {}
 
   requestOtp(email: string): OtpEntry {
@@ -26,13 +26,13 @@ export class AuthService {
     return entry;
   }
 
-  verifyOtp(email: string, code: string): { accessToken: string; refreshToken: string; user: User } {
+  async verifyOtp(email: string, code: string): Promise<{ accessToken: string; refreshToken: string; user: User }> {
     const entry = this.otps.get(email);
     if (!entry || entry.code !== code || dayjs().isAfter(dayjs(entry.expiresAt))) {
       throw new Error('Invalid OTP');
     }
     this.otps.delete(email);
-    const user = this.store.seedUser(email);
+    const user = await this.store.seedUser(email);
     const payload = { sub: user.id, email: user.email };
     const accessToken = jwt.sign(payload, this.env.jwtSecret, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ ...payload, type: 'refresh' }, this.env.jwtSecret, { expiresIn: '30d' });

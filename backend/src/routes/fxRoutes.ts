@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { StoreService } from '../services/inMemoryStore.js';
+import type { MongoStoreService } from '../services/mongoStore.js';
 
-export async function registerFxRoutes(fastify: FastifyInstance, store: StoreService) {
+export async function registerFxRoutes(fastify: FastifyInstance, store: MongoStoreService) {
   fastify.get('/fx/rates', { preHandler: fastify.authenticate }, async (request) => {
     const querySchema = z.object({ date: z.string().optional(), from: z.string().optional(), to: z.string().optional() });
     const query = querySchema.parse(request.query);
@@ -19,7 +19,7 @@ export async function registerFxRoutes(fastify: FastifyInstance, store: StoreSer
       rates: z.record(z.string()),
     });
     const body = bodySchema.parse(request.body);
-    const rate = store.upsertFxRate({
+    const rate = await store.upsertFxRate({
       id: `${body.base}-${body.date}`,
       date: body.date,
       base: body.base,
@@ -33,7 +33,7 @@ export async function registerFxRoutes(fastify: FastifyInstance, store: StoreSer
   fastify.get('/fx/usd-view', { preHandler: fastify.authenticate }, async (request) => {
     const querySchema = z.object({ date: z.string(), amount: z.string(), from: z.string() });
     const query = querySchema.parse(request.query);
-    const rate = store.getFxRate(query.date);
+    const rate = await store.getFxRate(query.date);
     if (!rate) {
       throw new Error('Rate not found');
     }
