@@ -1,37 +1,26 @@
 {
   "name": "invest-tracker-backend",
-  "version": "0.1.0",
-  "description": "Fastify-based API server for Invest Tracker",
+  "version": "1.0.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/server.js",
-    "lint": "eslint src --ext .ts",
-    "db:create-collections": "node ./scripts/create-collections.mjs",
-    "db:create-indexes": "node ./scripts/create-indexes.mjs"
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "dependencies": {
-    "@fastify/cookie": "^9.4.0",
-    "@fastify/cors": "^9.0.0",
-    "@fastify/jwt": "^8.1.1",
-    "@fastify/sensible": "^5.6.0",
-    "dayjs": "^1.11.12",
-    "decimal.js": "^10.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "fastify": "^4.28.1",
-    "fastify-plugin": "^4.5.1",
-    "mongodb": "^6.8.0",
-    "nanoid": "^5.0.7",
-    "zod": "^3.23.8"
+    "mongodb": "^6.9.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.14.8",
-    "@typescript-eslint/eslint-plugin": "^7.13.1",
-    "@typescript-eslint/parser": "^7.13.1",
-    "eslint": "8.57.0",
+    "@types/node": "^20.12.12",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.4.5"
   }
 }

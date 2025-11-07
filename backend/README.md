@@ -1,6 +1,6 @@
 # Invest Tracker API
 
-This package hosts the Fastify-based API server. It relies on MongoDB for persistence and exposes CLI helpers to create the collections and indexes expected by the application domain.
+A minimal Express + MongoDB backend that powers the Invest Tracker applications. The service focuses on the essential flows—auth, accounts, balances, FX rates, and dashboard summaries—without any caching or queueing layers.
 
 ## Prerequisites
 
@@ -10,25 +10,16 @@ This package hosts the Fastify-based API server. It relies on MongoDB for persis
 
 ## Environment variables
 
-Configure the MongoDB connection details before running any scripts:
+Create a `.env` file inside `backend/` (or export the variables in your shell) with the following keys:
 
 ```bash
-export MONGO_URI="mongodb://127.0.0.1:27017"
-export MONGO_DB_NAME="invest_tracker"
+MONGO_URI="mongodb://127.0.0.1:27017/invest_tracker"
+MONGO_DB="invest_tracker"
+JWT_SECRET="super-secret-value"
+PORT=4000
 ```
 
-You can place these variables in an `.env` file and load them with a tool such as [`direnv`](https://direnv.net/) or your shell profile.
-
-## MongoDB bootstrap scripts
-
-All database setup utilities live in [`backend/scripts`](scripts/). Two npm commands wrap them for convenience:
-
-```bash
-npm run db:create-collections   # creates the MongoDB collections used by the API
-npm run db:create-indexes       # applies indexes for query performance and uniqueness rules
-```
-
-Run both commands once after provisioning a MongoDB instance. They are idempotent, so executing them repeatedly is safe.
+The defaults match a local MongoDB instance. Override them to target a remote database or adjust the port.
 
 ## Install dependencies
 
@@ -36,25 +27,41 @@ Run both commands once after provisioning a MongoDB instance. They are idempoten
 npm install
 ```
 
-## Development server
-
-Start the API with hot reloading via [`ts-node-dev`](https://github.com/wclr/ts-node-dev):
+## Running the server in development
 
 ```bash
 npm run dev
 ```
 
-The server listens on <http://localhost:3000> by default. Ensure the MongoDB environment variables are available so the application can connect on boot. `ts-node-dev` runs the TypeScript entrypoint using CommonJS modules, avoiding the ES module loader requirements that can cause issues on some environments.
+The command starts the API with `ts-node-dev`, recompiling TypeScript files on change. When the server boots it establishes a MongoDB connection, creates the required indexes, and listens on the configured port.
 
-## Production build
+## Building for production
 
 ```bash
 npm run build
 npm run start
 ```
 
-The build step emits the compiled JavaScript into `dist/` and `npm run start` launches the compiled server.
+`npm run build` compiles the TypeScript sources to CommonJS output in `dist/`. `npm run start` launches the compiled JavaScript server.
 
-> **Tip:** Run these npm commands from inside the `backend` directory. If you prefer executing them from the repository root, use
-> `npm --prefix backend run <script>`. Avoid combining the `--prefix backend` flag while already positioned in the `backend`
-> folder—npm would resolve the prefix as `backend/backend`, leading to the “could not read package.json” error observed earlier.
+## API overview
+
+All endpoints live under the `/api/v1` prefix and require a bearer token issued by `POST /api/v1/auth/login`.
+
+- `POST /api/v1/auth/login` — minimal email-based login that creates the user if it does not exist and returns a JWT.
+- `GET /api/v1/accounts` — list accounts for the authenticated user.
+- `POST /api/v1/accounts` — create an account.
+- `PATCH /api/v1/accounts/:id` — update basic account fields.
+- `DELETE /api/v1/accounts/:id` — remove an account that has no balances.
+- `GET /api/v1/balances` — fetch balances, optionally filtered by year and month.
+- `POST /api/v1/balances/bulk` — create or update balances for a month across accounts in a single call.
+- `POST /api/v1/balances/:id/close` — close a month and automatically open the next one with the carried opening balance.
+- `POST /api/v1/balances/:id/reopen` — reopen a previously closed month.
+- `GET /api/v1/balances/series` — retrieve chronological balance data for charting.
+- `GET /api/v1/fx/rates` — fetch the most recent FX rates (or for a specific date).
+- `GET /api/v1/fx/history` — list FX rates across a date range.
+- `POST /api/v1/fx/update` — store FX rates for a date.
+- `GET /api/v1/fx/usd-view` — convert an amount from another currency to USD using the latest stored rate.
+- `GET /api/v1/dashboard/summary` — aggregate closing balances and differences for the requested period.
+
+The Mongo collections use Decimal128 for monetary values and are created on demand; no additional setup scripts are required for the first version.

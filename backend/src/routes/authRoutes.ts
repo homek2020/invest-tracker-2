@@ -1,28 +1,50 @@
-import type { FastifyInstance } from 'fastify';
-import { z } from 'zod';
-import { AuthService } from '../services/authService';
+import { Router } from 'express';
+import jwt from 'jsonwebtoken';
+import { getCollection } from '../services/mongo';
+import { WithId } from 'mongodb';
 
-export async function registerAuthRoutes(fastify: FastifyInstance, authService: AuthService) {
-  fastify.post('/auth/request-otp', async (request, reply) => {
-    const bodySchema = z.object({ email: z.string().email() });
-    const { email } = bodySchema.parse(request.body);
-    const otp = authService.requestOtp(email);
-    return reply.send({ success: true, code: otp.code, expiresAt: otp.expiresAt });
-  });
-
-  fastify.post('/auth/verify-otp', async (request, reply) => {
-    const bodySchema = z.object({ email: z.string().email(), code: z.string() });
-    const { email, code } = bodySchema.parse(request.body);
-    const { accessToken, refreshToken, user } = await authService.verifyOtp(email, code);
-    reply.setCookie('refreshToken', refreshToken, { path: '/', httpOnly: true, secure: false });
-    return reply.send({ accessToken, refreshToken, user });
-  });
-
-  fastify.post('/auth/refresh', async (request, reply) => {
-    const bodySchema = z.object({ refreshToken: z.string() });
-    const { refreshToken } = bodySchema.parse(request.body);
-    const tokens = authService.refreshToken(refreshToken);
-    reply.setCookie('refreshToken', tokens.refreshToken, { path: '/', httpOnly: true, secure: false });
-    return reply.send(tokens);
-  });
+interface User {
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+const router = Router();
+
+router.post('/login', async (req, res) => {
+  const { email } = req.body as { email?: string };
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  const users = getCollection<User>('users');
+  const now = new Date();
+  let existing = await users.findOne({ email });
+
+  if (!existing) {
+    const insertResult = await users.insertOne({
+      email,
+      createdAt: now,
+      updatedAt: now,
+    });
+    existing = { _id: insertResult.insertedId, email, createdAt: now, updatedAt: now } as WithId<User>;
+  } else {
+    await users.updateOne({ _id: existing._id }, { $set: { updatedAt: now } });
+  }
+
+  const token = jwt.sign(
+    { sub: existing._id.toHexString(), email: existing.email },
+    process.env.JWT_SECRET ?? 'dev-secret',
+    { expiresIn: '12h' },
+  );
+
+  return res.json({
+    token,
+    user: {
+      id: existing._id.toHexString(),
+      email: existing.email,
+    },
+  });
+});
+
+export default router;

@@ -1,55 +1,39 @@
-import Fastify from 'fastify';
-import fastifyCors from '@fastify/cors';
-import fastifyCookie from '@fastify/cookie';
-import fastifySensible from '@fastify/sensible';
-import { loadEnvironment } from './config/environment';
-import { connectToDatabase, MongoStoreService } from './services/mongoStore';
-import { AuthService } from './services/authService';
-import { registerAuthRoutes } from './routes/authRoutes';
-import { registerAccountRoutes } from './routes/accountRoutes';
-import { registerBalanceRoutes } from './routes/balanceRoutes';
-import { registerFxRoutes } from './routes/fxRoutes';
-import { registerDashboardRoutes } from './routes/dashboardRoutes';
-import authPlugin from './plugins/auth';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import { connectMongo } from './services/mongo';
+import authRoutes from './routes/authRoutes';
+import accountRoutes from './routes/accountRoutes';
+import balanceRoutes from './routes/balanceRoutes';
+import fxRoutes from './routes/fxRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
+import { requireAuth } from './middleware/requireAuth';
 
-async function bootstrap() {
-  const env = loadEnvironment();
-  const { client, collections } = await connectToDatabase(env);
-  const store = new MongoStoreService(collections);
-  const authService = new AuthService(env, store);
+dotenv.config();
 
-  const fastify = Fastify({ logger: true });
-  await fastify.register(fastifyCors, { origin: true, credentials: true });
-  await fastify.register(fastifyCookie);
-  await fastify.register(fastifySensible);
-  await fastify.register(authPlugin, { env });
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-  await registerAuthRoutes(fastify, authService);
-  await registerAccountRoutes(fastify, store);
-  await registerBalanceRoutes(fastify, store);
-  await registerFxRoutes(fastify, store);
-  await registerDashboardRoutes(fastify, store);
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
 
-  fastify.addHook('onClose', async () => {
-    await client.close();
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/accounts', requireAuth, accountRoutes);
+app.use('/api/v1/balances', requireAuth, balanceRoutes);
+app.use('/api/v1/fx', requireAuth, fxRoutes);
+app.use('/api/v1/dashboard', requireAuth, dashboardRoutes);
+
+const port = Number(process.env.PORT ?? 4000);
+
+async function start() {
+  await connectMongo();
+  app.listen(port, () => {
+    console.log(`API listening on port ${port}`);
   });
-
-  const { serverHost, serverPort } = env;
-  await fastify.listen({ host: serverHost, port: serverPort });
-
-  const closeGracefully = async () => {
-    try {
-      await fastify.close();
-    } catch (error) {
-      fastify.log.error(error);
-    }
-  };
-
-  process.on('SIGINT', closeGracefully);
-  process.on('SIGTERM', closeGracefully);
 }
 
-bootstrap().catch((error) => {
-  console.error('Failed to start server', error);
-  process.exit(1);
-});
+void start();
+
+export default app;
